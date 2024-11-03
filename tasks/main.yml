@@ -1,0 +1,21 @@
+---
+- name: Check if file exists
+  stat:
+    path: /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg
+  register: file_exists
+
+- name: Add makedeb apt key.
+  shell: >
+    wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
+  when: not file_exists.stat.exists
+
+- name: Add makedeb repository.
+  apt_repository:
+    repo: "{{ makedeb_apt_repository }}"
+    state: present
+    update_cache: true
+
+- name: Install packages
+  ansible.builtin.package:
+    name: "{{ makedeb_packages }}"
+    state: latest

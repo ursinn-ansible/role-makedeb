@@ -1,0 +1,6 @@
+makedeb_packages:
+  - jest
+makedeb_apt_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+makedeb_apt_repository: "deb [arch=all,{{ makedeb_apt_arch }} signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr {{ ansible_distribution_release }}"
+makedeb_apt_ignore_key_error: true
+makedeb_apt_gpg_key: "https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub"
