@@ -1,12 +1,13 @@
 ---
-- name: Check if file exists
+- name: Check if apt key file exists
   stat:
     path: /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg
   register: file_exists
 
 - name: Add makedeb apt key.
-  shell: >
-    wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
+  get_url:
+    url: "{{ makedeb_apt_gpg_key }}"
+    dest: /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg
   when: not file_exists.stat.exists
 
 - name: Add makedeb repository.
